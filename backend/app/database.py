@@ -1,21 +1,23 @@
-import os
-from dotenv import load_dotenv
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, create_async_engine
 
-from sqlalchemy import create_engine, text
-
-
-load_dotenv()
+from .settings import get_async_database_url
 
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+engine: AsyncEngine = create_async_engine(
+    get_async_database_url(),
+    pool_pre_ping=True,
+)
+session_factory = async_sessionmaker(
+    bind=engine,
+    expire_on_commit=False,
+)
 
-engine = create_engine(DATABASE_URL)
 
-def check_db():
+async def check_db() -> None:
     try:
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
         print("✅ DB connection OK")
     except Exception as e:
         print("❌ DB connection FAILED:", e)
-

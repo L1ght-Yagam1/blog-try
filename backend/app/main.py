@@ -2,13 +2,13 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.routes import router
+from app.api import main
 from app.database import check_db
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    check_db()
+    await check_db()
     yield
 
 
@@ -23,4 +23,4 @@ def root():
 
 
 
-app.include_router(router)
+app.include_router(main.api_router)
