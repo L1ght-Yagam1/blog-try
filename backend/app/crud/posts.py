@@ -2,7 +2,8 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..models import Post
+from ..models import Post, ContentBlock
+from ..schemas import ContentBlock as ContentBlockCreate
 
 
 async def get_posts(db: AsyncSession, offset: int, limit: int) -> list[Post]:
@@ -24,6 +25,23 @@ async def get_post(db: AsyncSession, post_id: int) -> Post:
     post_query = select(Post).where(Post.id == post_id).options(selectinload(Post.content_blocks))
     result = await db.execute(post_query)
     return result.scalars().first()
+
+async def post_content_block(
+        db: AsyncSession,
+        block: ContentBlockCreate,
+        post_id: int
+):
+    block_model = ContentBlock(
+        type=block.type,
+        post_id=post_id,
+        order=block.order,
+        img_url=block.img_url,
+        text=block.text
+    )
+    db.add(block_model)
+    await db.commit()
+    await db.refresh(block_model)
+    return block_model
 
 # async def update_post(db: AsyncSession, post_id: int, title: str) -> Post:
 #     post_query = update(Post).where(Post.id == post_id).values(title=title)

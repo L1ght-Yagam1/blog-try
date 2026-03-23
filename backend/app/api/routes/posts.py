@@ -4,7 +4,7 @@ from ...schemas import PostCreate, ContentBlock
 from ...crud import posts
 from ...deps import SessionDep
 
-router = APIRouter(prefix="/posts")
+router = APIRouter(prefix="/posts", tags=["posts"])
 
 
 
@@ -37,6 +37,6 @@ async def create_content_block(
     post_id: int,
     content_block: ContentBlock
 ):
-    pass
+    return await posts.post_content_block(db, content_block, post_id)
     
     
