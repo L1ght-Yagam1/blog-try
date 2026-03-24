@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
-from ...schemas import PostCreate, ContentBlock
+from ...schemas import PostCreate, ContentBlockCreate
+from ...services import posts as post_service
 from ...crud import posts
 from ...deps import SessionDep
 
@@ -13,7 +14,7 @@ async def create_post(
     db: SessionDep,
     post: PostCreate
 ):
-    return await posts.post_post(db, post.title)
+    return await post_service.create_post(db, post)
 
 
 @router.get("/")
@@ -35,7 +36,7 @@ async def get_post(
 async def create_content_block(
     db: SessionDep,
     post_id: int,
-    content_block: ContentBlock
+    content_block: ContentBlockCreate
 ):
     return await posts.post_content_block(db, content_block, post_id)
     

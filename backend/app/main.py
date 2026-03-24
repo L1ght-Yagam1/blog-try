@@ -20,7 +20,4 @@ app = FastAPI(lifespan=lifespan)
 def root():
     return {"message": "Hello, World!"}
 
-
-
-
 app.include_router(main.api_router)

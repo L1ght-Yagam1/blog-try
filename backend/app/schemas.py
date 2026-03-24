@@ -1,13 +1,9 @@
 from pydantic import BaseModel, model_validator
-from typing import Literal, Optional
-
-class PostCreate(BaseModel):
-    title: str
+from typing import Literal, Optional, List
 
 
-class ContentBlock(BaseModel):
+class ContentBlockCreate(BaseModel):
     type: Literal["text", "image"]
-    post_id: int
     order: int
     img_url: Optional[str] = None
     text: Optional[str] = None
@@ -28,3 +24,11 @@ class ContentBlock(BaseModel):
                 raise ValueError("Поле text должно быть пустым для блока типа image")
 
         return self
+
+
+class PostCreate(BaseModel):
+    title: str
+    contents: Optional[List[ContentBlockCreate]]
+
+
+    

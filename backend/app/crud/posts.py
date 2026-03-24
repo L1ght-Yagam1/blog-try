@@ -1,9 +1,11 @@
+from typing import List
+
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models import Post, ContentBlock
-from ..schemas import ContentBlock as ContentBlockCreate
+from ..schemas import ContentBlockCreate, PostCreate
 
 
 async def get_posts(db: AsyncSession, offset: int, limit: int) -> list[Post]:
@@ -13,12 +15,23 @@ async def get_posts(db: AsyncSession, offset: int, limit: int) -> list[Post]:
 
     return list(result.scalars().all())
 
-async def post_post(db: AsyncSession, title: str) -> Post:
-    new_post = Post(title=title)
-    db.add(new_post)
+async def post_post(db: AsyncSession, new_post: PostCreate) -> Post:
+    post = Post(title=new_post.title)
+    
+    for block in new_post.contents:
+        post.content_blocks.append(
+            ContentBlock(
+                type=block.type,
+                order=block.order,
+                img_url=block.img_url,
+                text=block.text
+            )
+        )
+
+    db.add(post)
     await db.commit()
-    await db.refresh(new_post)
-    return new_post
+    await db.refresh(post)
+    return post
 
 
 async def get_post(db: AsyncSession, post_id: int) -> Post:
