@@ -38,6 +38,6 @@ async def create_content_block(
     post_id: int,
     content_block: ContentBlockCreate
 ):
-    return await posts.post_content_block(db, content_block, post_id)
+    return await post_service.create_content_block(db, content_block, post_id)
     
     

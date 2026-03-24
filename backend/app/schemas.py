@@ -4,7 +4,6 @@ from typing import Literal, Optional, List
 
 class ContentBlockCreate(BaseModel):
     type: Literal["text", "image"]
-    order: int
     img_url: Optional[str] = None
     text: Optional[str] = None
 

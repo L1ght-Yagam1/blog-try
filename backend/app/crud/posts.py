@@ -18,11 +18,11 @@ async def get_posts(db: AsyncSession, offset: int, limit: int) -> list[Post]:
 async def post_post(db: AsyncSession, new_post: PostCreate) -> Post:
     post = Post(title=new_post.title)
     
-    for block in new_post.contents:
+    for index, block in enumerate(new_post.contents):
         post.content_blocks.append(
             ContentBlock(
                 type=block.type,
-                order=block.order,
+                order=index+1,
                 img_url=block.img_url,
                 text=block.text
             )
@@ -42,12 +42,13 @@ async def get_post(db: AsyncSession, post_id: int) -> Post:
 async def post_content_block(
         db: AsyncSession,
         block: ContentBlockCreate,
-        post_id: int
+        post_id: int,
+        order: int
 ):
     block_model = ContentBlock(
         type=block.type,
         post_id=post_id,
-        order=block.order,
+        order=order,
         img_url=block.img_url,
         text=block.text
     )
