@@ -1,11 +1,11 @@
 from pydantic import BaseModel, model_validator
-from typing import Literal, Optional, List
+from typing import Literal
 
 
 class ContentBlockCreate(BaseModel):
     type: Literal["text", "image"]
-    img_url: Optional[str] = None
-    text: Optional[str] = None
+    img_url: str | None
+    text: str | None
 
     @model_validator(mode="after")
     def validate_content(self):
