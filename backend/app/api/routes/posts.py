@@ -9,7 +9,7 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 
 
 
-@router.post("/")
+@router.post("/", response_model=PostPublic, response_model_exclude_none=True)
 async def create_post(
     db: SessionDep,
     post: PostCreate
@@ -17,7 +17,7 @@ async def create_post(
     return await post_service.create_post(db, post)
 
 
-@router.get("/")
+@router.get("/", response_model=list[PostPublic], response_model_exclude_none=True)
 async def get_posts(
     db: SessionDep,
     skip: int = 0,
