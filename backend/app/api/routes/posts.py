@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from ...schemas import PostCreate, ContentBlockCreate
+from ...schemas import PostCreate, ContentBlockCreate, PostPublic, ContentBlockPublic
 from ...services import posts as post_service
 from ...crud import posts
 from ...deps import SessionDep
@@ -25,14 +25,14 @@ async def get_posts(
 ):
     return await posts.get_posts(db, skip, limit)
 
-@router.get("/{post_id}")
+@router.get("/{post_id}", response_model=PostPublic, response_model_exclude_none=True)
 async def get_post(
     db: SessionDep,
     post_id: int
 ):
     return await posts.get_post(db, post_id)
 
-@router.post("/{post_id}/content-blocks")
+@router.post("/{post_id}/content-blocks", response_model=ContentBlockPublic, response_model_exclude_none=True)
 async def create_content_block(
     db: SessionDep,
     post_id: int,

@@ -1,5 +1,9 @@
-from sqlalchemy import String, ForeignKey
+import sqlalchemy as sa
+from sqlalchemy import String, ForeignKey, Enum as SqlEnum
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+from .enums import ContentBlockType
+
 
 class Base(DeclarativeBase):
     pass
@@ -20,7 +24,14 @@ class ContentBlock(Base):
     __tablename__ = "content_blocks"
     
     id: Mapped[int] = mapped_column(primary_key=True)
-    type: Mapped[str] = mapped_column(String(100), nullable=False)
+    type: Mapped[ContentBlockType] = mapped_column(
+    sa.Enum(
+        ContentBlockType,
+        name="content_block_type",
+        values_callable=lambda enum_cls: [e.value for e in enum_cls],
+    ),
+    nullable=False
+)
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"), nullable=False)
     order: Mapped[int] = mapped_column(nullable=False)
     img_url: Mapped[str] = mapped_column(String(255), nullable=True)

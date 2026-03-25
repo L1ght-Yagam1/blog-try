@@ -13,14 +13,14 @@ async def get_posts(db: AsyncSession, offset: int, limit: int) -> list[Post]:
 
     return list(result.scalars().all())
 
-async def post_post(db: AsyncSession, new_post: PostCreate) -> Post:
-    post = Post(title=new_post.title)
-    
-    for index, block in enumerate(new_post.contents):
+async def post_post(db: AsyncSession, title: str, blocks: list[ContentBlockService]) -> Post:
+    post = Post(title=title)
+
+    for block in blocks:
         post.content_blocks.append(
             ContentBlock(
                 type=block.type,
-                order=index+1,
+                order=block.order,
                 img_url=block.img_url,
                 text=block.text
             )
