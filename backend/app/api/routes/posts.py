@@ -21,7 +21,7 @@ async def create_post(
 async def get_posts(
     db: SessionDep,
     skip: int = 0,
-    limit: int = 3
+    limit: int = 10
 ):
     return await posts.get_posts(db, skip, limit)
 
